@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class Lottery (models.Model):
     id = models.AutoField(primary_key=True)
@@ -6,7 +7,7 @@ class Lottery (models.Model):
     details = models.TextField(verbose_name="detalles", help_text="Detalles del sorteo", null=True, blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="precio total", help_text="Precio total del sorteo (el costo de los boletos será: precio total / cantidad de boletos)")
     image = models.ImageField (upload_to="lottery", verbose_name="imagen", help_text="Imagen del sorteo", null=True, blank=True)
-    end_date = models.DateField (auto_now_add=True, verbose_name="fecha de cierre", help_text="Fecha de cierre del sorteo")
+    end_date = models.DateField (verbose_name="fecha de cierre", help_text="Fecha de cierre del sorteo", default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha de creación", help_text="Fecha de creación del sorteo", editable=False)
     numbers = models.IntegerField(verbose_name="cantidad de números", help_text="Cantidad de números que se pueden elegir en el sorteo")
     is_open = models.BooleanField(default=True, verbose_name="abierto", help_text="Indica si el sorteo está abierto")
