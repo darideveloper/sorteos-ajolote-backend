@@ -43,7 +43,7 @@ class Lotteries (View):
                 "date": end_date,
                 "image": lottery.image,
                 "numbers": free_tickets_nums,
-                "price": round(lottery.total_price / lottery.numbers, 2),
+                "price": int(lottery.total_price / lottery.numbers),
             }
             
             data.append (lottery_data)

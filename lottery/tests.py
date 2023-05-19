@@ -76,7 +76,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[0]["date"], self.date.strftime ("%d/%m/%Y"))
         self.assertEqual (response.json()[0]["image"], self.lottery_image)
         self.assertEqual (len(response.json()[0]["numbers"]), self.lottery_numbers - 1)
-        self.assertEqual (float(response.json()[0]["price"]), round(self.lottery_total_price / self.lottery_numbers, 2))
+        self.assertEqual (float(response.json()[0]["price"]), int(self.lottery_total_price / self.lottery_numbers))
         
         # Validate lottery b
         self.assertEqual (response.json()[1]["title"], self.lottery_name_b)
@@ -84,7 +84,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[1]["date"], self.date.strftime ("%d/%m/%Y"))
         self.assertEqual (response.json()[1]["image"], self.lottery_image)
         self.assertEqual (len(response.json()[1]["numbers"]), self.lottery_numbers)
-        self.assertEqual (float(response.json()[1]["price"]), round(self.lottery_total_price / self.lottery_numbers, 2))
+        self.assertEqual (float(response.json()[1]["price"]), int(self.lottery_total_price / self.lottery_numbers))
     
     def test_save_tickets (self):
         """ Test endpoint who save tickets """
