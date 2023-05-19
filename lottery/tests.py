@@ -1,15 +1,19 @@
-import datetime
+import json
 from . import models
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 class TestViews (TestCase):
     
     def setUp (self):       
         
-        self.date = datetime.datetime.now()
+        # Endpoints
+        self.endpoint_get_lotteries = reverse ('lottery_get_lotteries')
+        self.endpoint_save_ticket = reverse ('lottery_save_tickets')
         
         # Create lotteries
+        self.date = timezone.now()
         self.lottery_name_a = "sample lottery a"
         self.lottery_name_b = "sample lottery b"
         self.lottery_details = "sample details"
@@ -39,12 +43,17 @@ class TestViews (TestCase):
             is_open = self.lottery_is_open,
         )
         
+        # Tickets data
+        self.user_name = "sample user"
+        self.user_email = "sample@gmail.com"
+        self.numbers = [2,3,4,5,6]
+        
         # Create tickets
         self.ticket = models.Ticket.objects.create (
             lottery = self.lottery_a,
             number = 1,
-            buyer_name = "sample buyer",
-            buyer_email = "sample@gmail.com",
+            buyer_name = self.user_name,
+            buyer_email = self.user_email,
             buy_at = self.date,
             is_paid = False,
             active = True,            
@@ -53,7 +62,7 @@ class TestViews (TestCase):
     def test_get_lotteries (self):
         """ Test endpoint who return all lotteries data """
         
-        response = self.client.get (reverse ('lottery_get_lotteries'))
+        response = self.client.get (self.endpoint_get_lotteries)
         
         # Validate response status
         self.assertEqual (response.status_code, 200)
@@ -76,4 +85,127 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[1]["image"], self.lottery_image)
         self.assertEqual (len(response.json()[1]["numbers"]), self.lottery_numbers)
         self.assertEqual (float(response.json()[1]["price"]), round(self.lottery_total_price / self.lottery_numbers, 2))
+    
+    def test_save_tickets (self):
+        """ Test endpoint who save tickets """
+        
+        # Regular request
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+                "tickets": self.numbers,
+                "lottery": self.lottery_a.name,
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.json()["data"]["message"], "saved")
+        self.assertEqual (response.status_code, 200)
+        self.assertEqual (response.json()["status"], "success")
+
+    
+    def test_save_tickets_missing_data (self):
+        """ Test endpoint who save tickets, with missing data """
+        
+        # Request with missing data
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.json()["status"], "error")
+        self.assertEqual (response.json()["data"]["message"], "missing data")
+        
+    def test_save_tickets_lottery_not_found (self):
+        """ Test endpoint who save tickets, with invalid lottery name """
+        
+        # Request with invalid lotery name
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+                "tickets": self.numbers,
+                "lottery": "this lottery not exist",
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.json()["status"], "error")
+        self.assertEqual (response.json()["data"]["message"], "lottery not found")
+        
+    def test_save_tickets_lottery_not_open (self):
+        """ Test endpoint who save tickets, with no open lottery """
+        
+        # Update lottery a to not open
+        self.lottery_b.is_open = False
+        self.lottery_b.save()
+        
+        # Regular request
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+                "tickets": self.numbers,
+                "lottery": self.lottery_b.name,
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.json()["status"], "error")
+        self.assertEqual (response.json()["data"]["message"], "lottery is closed")
+        
+    
+    def test_save_tickets_not_available (self):
+        """ Test endpoint who save tickets, with no available tickets """
+        
+        # Initial request
+        self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+                "tickets": self.numbers,
+                "lottery": self.lottery_a.name,
+            }, 
+            content_type='application/json',
+        )
+        
+        # Request with same tickets (and some new tickets)
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": self.user_email, 
+                "tickets": self.numbers,
+                "lottery": self.lottery_a.name,
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.json()["status"], "error")
+        self.assertEqual (response.json()["data"]["message"], "numbers not available")
+        self.assertEqual (response.json()["data"]["numbers"], self.numbers)
+        
+        
+        
+        
+        
+        
         
