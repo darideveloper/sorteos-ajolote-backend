@@ -105,9 +105,10 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.json()["data"]["message"], "saved")
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "success")
+        self.assertEqual (response.json()["data"], {})
+        self.assertEqual (response.json()["message"], "saved")
 
     
     def test_save_tickets_missing_data (self):
@@ -126,7 +127,8 @@ class TestViews (TestCase):
         # Validate response
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"]["message"], "missing data")
+        self.assertEqual (response.json()["data"], {})
+        self.assertEqual (response.json()["message"], "missing data")
         
     def test_save_tickets_lottery_not_found (self):
         """ Test endpoint who save tickets, with invalid lottery name """
@@ -146,7 +148,8 @@ class TestViews (TestCase):
         # Validate response
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"]["message"], "lottery not found")
+        self.assertEqual (response.json()["data"], {})
+        self.assertEqual (response.json()["message"], "lottery not found")
         
     def test_save_tickets_lottery_not_open (self):
         """ Test endpoint who save tickets, with no open lottery """
@@ -170,7 +173,8 @@ class TestViews (TestCase):
         # Validate response
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"]["message"], "lottery is closed")
+        self.assertEqual (response.json()["data"], {})
+        self.assertEqual (response.json()["message"], "lottery is closed")
         
     
     def test_save_tickets_not_available (self):
@@ -203,8 +207,8 @@ class TestViews (TestCase):
         # Validate response
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"]["message"], "numbers not available")
-        self.assertEqual (response.json()["data"]["numbers"], self.numbers)
+        self.assertEqual (response.json()["data"], {"numbers": self.numbers})
+        self.assertEqual (response.json()["message"], "numbers not available")
         
     def test_save_tickets_invalid_email (self):
         """ Test endpoint who save tickets, with no available tickets """
@@ -224,7 +228,8 @@ class TestViews (TestCase):
         # Validate response
         self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"]["message"], "invalid email")
+        self.assertEqual (response.json()["data"], {})
+        self.assertEqual (response.json()["message"], "invalid email")
         
         
         

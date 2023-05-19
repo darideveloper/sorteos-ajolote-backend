@@ -76,9 +76,8 @@ class SaveTickets (View):
         if not user_name or not user_email or not user_tickets or not user_lottery:
             return JsonResponse ({
                 "status": "error",
-                "data": {
-                    "message": "missing data",
-                }
+                "message": "missing data",
+                "data": {}
             })
             
         # Validate email
@@ -87,9 +86,8 @@ class SaveTickets (View):
         except:
             return JsonResponse ({
                 "status": "error",
-                "data": {
-                    "message": "invalid email",
-                }
+                "message": "invalid email",
+                "data": {}
             })
         
 
@@ -99,9 +97,8 @@ class SaveTickets (View):
         if not lottery:
             return JsonResponse ({
                 "status": "error",
-                "data": {
-                    "message": "lottery not found",
-                }
+                "message": "lottery not found",
+                "data": {}
             })
             
         lottery = lottery[0]
@@ -109,9 +106,8 @@ class SaveTickets (View):
         if not lottery.is_open:
             return JsonResponse ({
                 "status": "error",
-                "data": {
-                    "message": "lottery is closed",
-                }
+                "message": "lottery is closed",
+                "data": {}
             })
         
         # Validate if all numbers are free
@@ -122,8 +118,8 @@ class SaveTickets (View):
         if not_abaible_tickets:
             return JsonResponse ({
                 "status": "error",
+                "message": "numbers not available",
                 "data": {
-                    "message": "numbers not available",
                     "numbers": not_abaible_tickets,
                 }
             })
@@ -140,7 +136,6 @@ class SaveTickets (View):
         # Return success
         return JsonResponse ({
             "status": "success",
-            "data": {
-                "message": "saved",
-            }
+            "message": "saved",
+            "data": {}
         })
