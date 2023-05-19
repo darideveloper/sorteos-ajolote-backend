@@ -1,8 +1,11 @@
+import os
 import json
 from . import models
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+
+HOST = os.environ.get ('HOST')
 
 class TestViews (TestCase):
     
@@ -19,7 +22,7 @@ class TestViews (TestCase):
         self.lottery_details = "sample details"
         self.lottery_end_date = "2023-01-01"
         self.lottery_total_price = 1000
-        self.lottery_image = "https://i.imgur.com/OSCNqOt.jpg"
+        self.lottery_image = "sample.jpg"
         self.lottery_numbers = 100
         self.lottery_is_open = True
         
@@ -74,7 +77,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[0]["title"], self.lottery_name_a)
         self.assertEqual (response.json()[0]["description"], self.lottery_details)
         self.assertEqual (response.json()[0]["date"], self.date.strftime ("%d/%m/%Y"))
-        self.assertEqual (response.json()[0]["image"], self.lottery_image)
+        self.assertEqual (response.json()[0]["image"], f'{HOST}/media/{self.lottery_image}')
         self.assertEqual (len(response.json()[0]["numbers"]), self.lottery_numbers - 1)
         self.assertEqual (float(response.json()[0]["price"]), int(self.lottery_total_price / self.lottery_numbers))
         
@@ -82,7 +85,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[1]["title"], self.lottery_name_b)
         self.assertEqual (response.json()[1]["description"], self.lottery_details)
         self.assertEqual (response.json()[1]["date"], self.date.strftime ("%d/%m/%Y"))
-        self.assertEqual (response.json()[1]["image"], self.lottery_image)
+        self.assertEqual (response.json()[1]["image"], f'{HOST}/media/{self.lottery_image}')
         self.assertEqual (len(response.json()[1]["numbers"]), self.lottery_numbers)
         self.assertEqual (float(response.json()[1]["price"]), int(self.lottery_total_price / self.lottery_numbers))
     
