@@ -79,7 +79,7 @@ class SaveTickets (View):
                 "data": {
                     "message": "missing data",
                 }
-            }, status=400)
+            })
             
         # Validate email
         try:
@@ -90,7 +90,7 @@ class SaveTickets (View):
                 "data": {
                     "message": "invalid email",
                 }
-            }, status=400)
+            })
         
 
         # Get lottery and catch errors
@@ -102,7 +102,7 @@ class SaveTickets (View):
                 "data": {
                     "message": "lottery not found",
                 }
-            }, status=400)
+            })
             
         lottery = lottery[0]
         
@@ -112,7 +112,7 @@ class SaveTickets (View):
                 "data": {
                     "message": "lottery is closed",
                 }
-            }, status=400)
+            })
         
         # Validate if all numbers are free
         buyed_tickets = models.Ticket.objects.filter (active=True, lottery=lottery)
@@ -126,7 +126,7 @@ class SaveTickets (View):
                     "message": "numbers not available",
                     "numbers": not_abaible_tickets,
                 }
-            }, status=400)
+            })
             
         # Save tickets
         for ticket in user_tickets:
@@ -143,4 +143,4 @@ class SaveTickets (View):
             "data": {
                 "message": "saved",
             }
-        }, status=200)
+        })

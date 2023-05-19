@@ -124,7 +124,7 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"]["message"], "missing data")
         
@@ -144,7 +144,7 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"]["message"], "lottery not found")
         
@@ -168,7 +168,7 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"]["message"], "lottery is closed")
         
@@ -201,7 +201,7 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"]["message"], "numbers not available")
         self.assertEqual (response.json()["data"]["numbers"], self.numbers)
@@ -222,7 +222,7 @@ class TestViews (TestCase):
         )
         
         # Validate response
-        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.status_code, 200)
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"]["message"], "invalid email")
         
