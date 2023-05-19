@@ -206,6 +206,26 @@ class TestViews (TestCase):
         self.assertEqual (response.json()["data"]["message"], "numbers not available")
         self.assertEqual (response.json()["data"]["numbers"], self.numbers)
         
+    def test_save_tickets_invalid_email (self):
+        """ Test endpoint who save tickets, with no available tickets """
+        
+        # Request with same tickets (and some new tickets)
+        response = self.client.post (
+            self.endpoint_save_ticket, 
+            {
+                "user_name": self.user_name,
+                "user_email": "invalid email", 
+                "tickets": self.numbers,
+                "lottery": self.lottery_a.name,
+            }, 
+            content_type='application/json',
+        )
+        
+        # Validate response
+        self.assertEqual (response.status_code, 400)
+        self.assertEqual (response.json()["status"], "error")
+        self.assertEqual (response.json()["data"]["message"], "invalid email")
+        
         
         
         

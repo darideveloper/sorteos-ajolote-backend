@@ -4,9 +4,11 @@ from . import models
 from django.urls import reverse
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from django.core.validators import validate_email
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
+
 
 HOST = os.environ.get ('HOST')
 
@@ -78,6 +80,18 @@ class SaveTickets (View):
                     "message": "missing data",
                 }
             }, status=400)
+            
+        # Validate email
+        try:
+            validate_email (user_email)
+        except:
+            return JsonResponse ({
+                "status": "error",
+                "data": {
+                    "message": "invalid email",
+                }
+            }, status=400)
+        
 
         # Get lottery and catch errors
         lottery = models.Lottery.objects.filter (name=user_lottery)
