@@ -1,3 +1,4 @@
+import os
 import json
 from . import models
 from django.urls import reverse
@@ -6,6 +7,8 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
+
+HOST = os.environ.get ('HOST')
 
 def index (request):
     """ Redirect to admin """
@@ -33,15 +36,16 @@ class Lotteries (View):
             total_tickets_nums = list(range(1, lottery.numbers + 1))
             free_tickets_nums = list(filter(lambda ticket: ticket not in buyed_tickets_nums, total_tickets_nums))
             
-            # Format date
+            # Format fields
             end_date = lottery.end_date.strftime ("%d/%m/%Y")
+            image_url = f'{HOST}{lottery.image.url}'
             
             # Save as dictionary
             lottery_data = {
                 "title": lottery.name,
                 "description": lottery.details,
                 "date": end_date,
-                "image": lottery.image,
+                "image": image_url,
                 "numbers": free_tickets_nums,
                 "price": int(lottery.total_price / lottery.numbers),
             }

@@ -5,7 +5,7 @@ class Lottery (models.Model):
     name = models.CharField(max_length=200, verbose_name="nombre", help_text="Nombre del sorteo", unique=True)
     details = models.TextField(verbose_name="detalles", help_text="Detalles del sorteo", null=True, blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="precio total", help_text="Precio total del sorteo (el costo de los boletos será: precio total / cantidad de boletos)")
-    image = models.URLField (verbose_name="imagen", help_text="URL de la imagen del sorteo", null=True, blank=True)
+    image = models.ImageField (upload_to="lottery", verbose_name="imagen", help_text="Imagen del sorteo", null=True, blank=True)
     end_date = models.DateTimeField(verbose_name="fecha de finalización", help_text="Fecha de finalización del sorteo", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha de creación", help_text="Fecha de creación del sorteo", editable=False)
     numbers = models.IntegerField(verbose_name="cantidad de números", help_text="Cantidad de números que se pueden elegir en el sorteo")
