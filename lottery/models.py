@@ -25,12 +25,12 @@ class Ticket (models.Model):
     number = models.IntegerField(verbose_name="número", help_text="Número del boleto")
     buyer_name = models.CharField(max_length=200, verbose_name="dueño", help_text="Nombre del comprador del boleto")
     buyer_email = models.EmailField(verbose_name="correo electrónico", help_text="Correo electrónico del comprador del boleto")    
-    buy_at = models.DateTimeField(auto_now_add=True, verbose_name="fecha de apartado", help_text="Fecha de apartado del boleto", editable=False)
+    buy_at = models.DateTimeField(verbose_name="fecha de apartado", help_text="Fecha de apartado del boleto", editable=True, default=timezone.now)
     is_paid = models.BooleanField(default=False, verbose_name="pagado", help_text="Indica si el boleto ha sido pagado")
     active = models.BooleanField(default=True, verbose_name="activo", help_text="Indica si el boleto está activo")
     
     def __str__ (self):
-        return f"{self.lottery.name} - {self.number} - {self.buyer_name}"
+        return f"{self.lottery.name} - {self.number} - {self.buyer_name} ({self.buy_at})"
     
     class Meta:
         verbose_name = "boleto"

@@ -1,11 +1,13 @@
 import os
 import json
 from . import models
+from crons import disable_tickets
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
 HOST = os.environ.get ('HOST')
+DELETE_HOURS = int(os.getenv ("DISABLE_HOURS"))
 
 class TestViews (TestCase):
     
@@ -15,8 +17,10 @@ class TestViews (TestCase):
         self.endpoint_get_lotteries = reverse ('lottery_get_lotteries')
         self.endpoint_save_ticket = reverse ('lottery_save_tickets')
         
+        # Get current datetime with timezone
+        
         # Create lotteries
-        self.date = timezone.now()
+        self.date = timezone.now().astimezone ()
         self.lottery_name_a = "sample lottery a"
         self.lottery_name_b = "sample lottery b"
         self.lottery_details = "sample details"
@@ -232,8 +236,57 @@ class TestViews (TestCase):
         self.assertEqual (response.json()["message"], "invalid email")
         
         
+class TestCrons (TestCase):
+    
+    def setUp (self):
+        """ Setup test """
         
+        self.date = timezone.now()
+        self.limit_date = self.date-timezone.timedelta(hours=DELETE_HOURS)
         
+        # Create lotteries
         
+        lottery = models.Lottery.objects.create (
+            name = "sample lottery",
+            details = "sample details",
+            total_price = 1000,
+            image = "sample.jpg",
+            end_date = "2023-01-01",
+            numbers = 100,
+            is_open = True,
+        )
+        
+        # Create tickets
+        models.Ticket.objects.create (
+            lottery = lottery,
+            number = 1,
+            buyer_name = "sample user",
+            buyer_email = "sample@gmail.com",
+            buy_at = self.limit_date, # ticket buyed hours ago
+            is_paid = False,
+            active = True,            
+        )
+        
+        models.Ticket.objects.create (
+            lottery = lottery,
+            number = 2,
+            buyer_name = "sample user",
+            buyer_email = "sample@gmail.com",
+            buy_at = self.date, # ticket buyed now 
+            is_paid = False,
+            active = True,            
+        )
+        
+    def test_delete_tickets (self):
+        """ Test delete tickets cron """
+        
+        # Validate tickets before run cron
+        self.assertEqual (models.Ticket.objects.filter (active=True).count(), 2)
+        
+        # Run cron
+        disable_tickets.disable ()
+        
+        # Validate tickets before run cron
+        self.assertEqual (models.Ticket.objects.filter (active=True).count(), 1)
         
         
