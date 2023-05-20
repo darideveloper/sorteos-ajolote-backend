@@ -35,4 +35,3 @@ class Ticket (models.Model):
     class Meta:
         verbose_name = "boleto"
         verbose_name_plural = "boletos"
-        unique_together = [['lottery', 'number']]
