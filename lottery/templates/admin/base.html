@@ -1,0 +1,17 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+  body {
+    font-family: 'Noto Sans', sans-serif !important
+  }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+<link rel="icon" href="https://sorteos-ajolote.darideveloper.com/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
