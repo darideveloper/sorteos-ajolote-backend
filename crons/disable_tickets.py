@@ -16,7 +16,6 @@ def disable ():
     limit_date = timezone.now().astimezone(timezone.utc) - timezone.timedelta(hours=DISABLE_HOURS - 0.1)
     print (f"Disabling tickets buyed before {limit_date}...")
     tickets = models.Ticket.objects.filter (is_paid=False, buy_at__lte=limit_date)
-    print (tickets)
 
     if tickets:
         print (f"Disabling {len(tickets)} tickets")

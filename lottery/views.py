@@ -4,13 +4,9 @@ from . import models
 from django.urls import reverse
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.core.validators import validate_email
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
-
-
-HOST = os.environ.get ('HOST')
 
 def index (request):
     """ Redirect to admin """
@@ -40,14 +36,13 @@ class Lotteries (View):
             
             # Format fields
             end_date = lottery.end_date.strftime ("%d/%m/%Y")
-            image_url = f'{HOST}{lottery.image.url}'
             
             # Save as dictionary
             lottery_data = {
                 "title": lottery.name,
                 "description": lottery.details,
                 "date": end_date,
-                "image": image_url,
+                "image": lottery.image.url,
                 "numbers": free_tickets_nums,
                 "price": int(lottery.total_price / lottery.numbers),
             }
@@ -68,28 +63,17 @@ class SaveTickets (View):
     
         # Get dta from json
         user_name = json_data.get ("user_name")
-        user_email = json_data.get ("user_email")
+        user_phone = json_data.get ("user_phone")
         user_tickets = json_data.get ("tickets") # list of numbers
         user_lottery = json_data.get ("lottery") # name of lottery
 
         # Validate incoming data
-        if not user_name or not user_email or not user_tickets or not user_lottery:
+        if not user_name or not user_phone or not user_tickets or not user_lottery:
             return JsonResponse ({
                 "status": "error",
                 "message": "missing data",
                 "data": {}
-            })
-            
-        # Validate email
-        try:
-            validate_email (user_email)
-        except:
-            return JsonResponse ({
-                "status": "error",
-                "message": "invalid email",
-                "data": {}
-            })
-        
+            })        
 
         # Get lottery and catch errors
         lottery = models.Lottery.objects.filter (name=user_lottery)
@@ -130,7 +114,7 @@ class SaveTickets (View):
                 lottery=lottery,
                 number=ticket,
                 buyer_name=user_name,
-                buyer_email=user_email,
+                buyer_email=user_phone,
             )
             
         # Return success

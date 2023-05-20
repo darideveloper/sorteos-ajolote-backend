@@ -5,8 +5,8 @@ from crons import disable_tickets
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from sorteosajolote import settings
 
-HOST = os.environ.get ('HOST')
 DELETE_HOURS = int(os.getenv ("DISABLE_HOURS"))
 
 class TestViews (TestCase):
@@ -52,7 +52,7 @@ class TestViews (TestCase):
         
         # Tickets data
         self.user_name = "sample user"
-        self.user_email = "sample@gmail.com"
+        self.user_phone = "4491234567"
         self.numbers = [2,3,4,5,6]
         
         # Create tickets
@@ -60,7 +60,7 @@ class TestViews (TestCase):
             lottery = self.lottery_a,
             number = 1,
             buyer_name = self.user_name,
-            buyer_email = self.user_email,
+            buyer_email = self.user_phone,
             buy_at = self.date,
             is_paid = False,
             active = True,            
@@ -81,7 +81,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[0]["title"], self.lottery_name_a)
         self.assertEqual (response.json()[0]["description"], self.lottery_details)
         self.assertEqual (response.json()[0]["date"], self.date.strftime ("%d/%m/%Y"))
-        self.assertEqual (response.json()[0]["image"], f'{HOST}/media/{self.lottery_image}')
+        self.assertEqual (response.json()[0]["image"], f'{settings.MEDIA_URL}{self.lottery_image}')
         self.assertEqual (len(response.json()[0]["numbers"]), self.lottery_numbers - 1)
         self.assertEqual (float(response.json()[0]["price"]), int(self.lottery_total_price / self.lottery_numbers))
         
@@ -89,7 +89,7 @@ class TestViews (TestCase):
         self.assertEqual (response.json()[1]["title"], self.lottery_name_b)
         self.assertEqual (response.json()[1]["description"], self.lottery_details)
         self.assertEqual (response.json()[1]["date"], self.date.strftime ("%d/%m/%Y"))
-        self.assertEqual (response.json()[1]["image"], f'{HOST}/media/{self.lottery_image}')
+        self.assertEqual (response.json()[1]["image"], f'{settings.MEDIA_URL}{self.lottery_image}')
         self.assertEqual (len(response.json()[1]["numbers"]), self.lottery_numbers)
         self.assertEqual (float(response.json()[1]["price"]), int(self.lottery_total_price / self.lottery_numbers))
     
@@ -101,7 +101,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
                 "tickets": self.numbers,
                 "lottery": self.lottery_a.name,
             }, 
@@ -123,7 +123,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
             }, 
             content_type='application/json',
         )
@@ -142,7 +142,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
                 "tickets": self.numbers,
                 "lottery": "this lottery not exist",
             }, 
@@ -167,7 +167,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
                 "tickets": self.numbers,
                 "lottery": self.lottery_b.name,
             }, 
@@ -189,7 +189,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
                 "tickets": self.numbers,
                 "lottery": self.lottery_a.name,
             }, 
@@ -201,7 +201,7 @@ class TestViews (TestCase):
             self.endpoint_save_ticket, 
             {
                 "user_name": self.user_name,
-                "user_email": self.user_email, 
+                "user_phone": self.user_phone, 
                 "tickets": self.numbers,
                 "lottery": self.lottery_a.name,
             }, 
@@ -213,28 +213,6 @@ class TestViews (TestCase):
         self.assertEqual (response.json()["status"], "error")
         self.assertEqual (response.json()["data"], {"numbers": self.numbers})
         self.assertEqual (response.json()["message"], "numbers not available")
-        
-    def test_save_tickets_invalid_email (self):
-        """ Test endpoint who save tickets, with no available tickets """
-        
-        # Request with same tickets (and some new tickets)
-        response = self.client.post (
-            self.endpoint_save_ticket, 
-            {
-                "user_name": self.user_name,
-                "user_email": "invalid email", 
-                "tickets": self.numbers,
-                "lottery": self.lottery_a.name,
-            }, 
-            content_type='application/json',
-        )
-        
-        # Validate response
-        self.assertEqual (response.status_code, 200)
-        self.assertEqual (response.json()["status"], "error")
-        self.assertEqual (response.json()["data"], {})
-        self.assertEqual (response.json()["message"], "invalid email")
-        
         
 class TestCrons (TestCase):
     
