@@ -114,7 +114,7 @@ class SaveTickets (View):
                 lottery=lottery,
                 number=ticket,
                 buyer_name=user_name,
-                buyer_email=user_phone,
+                buyer_phone=user_phone,
             )
             
         # Return success

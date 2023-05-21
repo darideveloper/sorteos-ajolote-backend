@@ -60,7 +60,7 @@ class TestViews (TestCase):
             lottery = self.lottery_a,
             number = 1,
             buyer_name = self.user_name,
-            buyer_email = self.user_phone,
+            buyer_phone = self.user_phone,
             buy_at = self.date,
             is_paid = False,
             active = True,            
@@ -239,7 +239,7 @@ class TestCrons (TestCase):
             lottery = lottery,
             number = 1,
             buyer_name = "sample user",
-            buyer_email = "sample@gmail.com",
+            buyer_phone = 4491234567,
             buy_at = self.limit_date, # ticket buyed hours ago
             is_paid = False,
             active = True,            
@@ -249,7 +249,7 @@ class TestCrons (TestCase):
             lottery = lottery,
             number = 2,
             buyer_name = "sample user",
-            buyer_email = "sample@gmail.com",
+            buyer_phone = 4491234567,
             buy_at = self.date, # ticket buyed now 
             is_paid = False,
             active = True,            

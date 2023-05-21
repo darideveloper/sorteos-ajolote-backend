@@ -11,6 +11,6 @@ class LotteryAdmin (admin.ModelAdmin):
 class TicketAdmin (admin.ModelAdmin):
     list_display = ('number', 'lottery', 'buyer_name', 'buy_at', 'is_paid', 'active')
     list_filter = ('lottery', 'buy_at', 'is_paid', 'active')
-    search_fields = ('lottery__name', 'number', 'buyer_name', 'buyer_email')
+    search_fields = ('lottery__name', 'number', 'buyer_name', 'buyer_phone')
     search_help_text = "Puedes buscar por nombre del sorteo, número de boleto, nombre del comprador y correo electrónico del comprador"
     list_per_page = 20
