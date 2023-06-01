@@ -52,26 +52,26 @@ Project type: **client's project**
 
 # Details
 
-## Models\r
-\r
-The project have the models **Lottery** (to save the lotteries data, like name, total price, numbers, etc).\r
-And **Ticket** to save the Tickets selected by the clients. \r
-\r
-Both models are available in the Admin Dashboard.\r
-\r
-## Endpoints\r
-\r
-* **get-lotteries**: GET data of the current lotteries. \r
+## Models
+
+The project have the models **Lottery** (to save the lotteries data, like name, total price, numbers, etc).
+And **Ticket** to save the Tickets selected by the clients. 
+
+Both models are available in the Admin Dashboard.
+
+## Endpoints
+
+* **get-lotteries**: GET data of the current lotteries. 
 * **save-tickets**: POST ticket(s) selected by the users
 
 # Roadmap
 
-- [x] Models in admin \r
-- [x] Enpoints to query lotteries\r
-- [x] Endpoint to save tickets\r
-- [x] Save images in S3\r
-- [x] Views tests\r
-- [x] Cron for disable olt tickets no payed \r
+- [x] Models in admin 
+- [x] Enpoints to query lotteries
+- [x] Endpoint to save tickets
+- [x] Save images in S3
+- [x] Views tests
+- [x] Cron for disable olt tickets no payed 
 - [ ] Customize dashboard colors]
 
 
